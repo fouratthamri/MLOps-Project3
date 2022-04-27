@@ -1,9 +1,8 @@
 """
 Basic cleaning module test
 """
-import pandas as pd
 import pytest
-from src import clean_step
+from src.clean_step import clean_data
 
 
 @pytest.fixture
@@ -11,7 +10,7 @@ def data():
     """
     Get dataset
     """
-    df = clean_step.clean_data()
+    df = clean_data()
     return df
 
 
