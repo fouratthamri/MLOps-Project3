@@ -3,7 +3,7 @@ Basic cleaning module test
 """
 import pandas as pd
 import pytest
-import src.clean_step
+from src import clean_step
 
 
 @pytest.fixture
@@ -11,7 +11,7 @@ def data():
     """
     Get dataset
     """
-    df = src.clean_step.clean_data()
+    df = clean_step.clean_data()
     return df
 
 
