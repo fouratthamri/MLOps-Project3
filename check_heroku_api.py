@@ -5,15 +5,15 @@ import requests
 
 
 data = {
-    "age": 32,
+    "age": 24,
     "workclass": "Private",
     "education": "Some-college",
-    "maritalStatus": "Married-civ-spouse",
-    "occupation": "Exec-managerial",
+    "maritalStatus": "Divorced",
+    "occupation": "Tech-support",
     "relationship": "Husband",
     "race": "Black",
     "sex": "Male",
-    "hoursPerWeek": 60,
+    "hoursPerWeek": 40,
     "nativeCountry": "United-States"
     }
 r = requests.post('https://classifier-api-heroku.herokuapp.com/', json=data)
