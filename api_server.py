@@ -3,9 +3,8 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Literal
 from joblib import load
-# import src.helper_functions
 from pandas.core.frame import DataFrame
-import src
+import src.helper_functions
 import numpy as np
 
 
