@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Literal
 from joblib import load
-# import src.common_functions
+# import src.helper_functions
 from pandas.core.frame import DataFrame
 import numpy as np
 
@@ -95,10 +95,10 @@ async def inference(user_data: User):
         "native-country",
     ])
 
-    X, _, _, _ = src.common_functions.process_data(
+    X, _, _, _ = src.helper_functions.process_data(
                 df_temp,
-                categorical_features=src.common_functions.get_cat_features(),
+                categorical_features=src.helper_functions.get_categorical_features(),
                 encoder=encoder, lb=lb, training=False)
-    pred = src.common_functions.inference(model, X)
+    pred = src.helper_functions.inference(model, X)
     y = lb.inverse_transform(pred)[0]
     return {"prediction": y}

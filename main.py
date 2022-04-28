@@ -1,33 +1,34 @@
 # Put the code for your API here.
 import argparse
-from src import clean_step, train_step, slice_eval
+from src import basic_cleaning, train_test_model, check_score
 import logging
 
 
 def go(args):
     """
-    Execute the pipeline
+    Run the pipeline
     """
     logging.basicConfig(level=logging.INFO)
 
-    if args.action == "all" or args.action == "clean_data":
-        logging.info("clean data")
-        clean_step.clean_data()
+    if args.action == "all" or args.action == "basic_cleaning":
+        logging.info("Basic cleaning procedure started")
+        basic_cleaning.main()
 
     if args.action == "all" or args.action == "train_test_model":
-        logging.info("train and test rf model")
-        train_step.main()
+        logging.info("Train/Test model procedure started")
+        train_test_model.main()
 
-    if args.action == "all" or args.action == "evaluate_slice_performance":
-        logging.info("get model metrics for specific data slices")
-        slice_eval.main()
+    if args.action == "all" or args.action == "check_score":
+        logging.info("Score check procedure started")
+        check_score.main()
+
 
 
 if __name__ == "__main__":
     """
     Main entrypoint
     """
-    parser = argparse.ArgumentParser(description="ML training pipeline")
+    parser = argparse.ArgumentParser(description="Classifier training pipeline")
 
     parser.add_argument(
         "--action",
@@ -37,7 +38,7 @@ if __name__ == "__main__":
                  "evaluate_slice_performance",
                  "all"],
         default="all",
-        help="Pipeline action"
+        help="Pipeline step to perform"
     )
 
     args = parser.parse_args()
