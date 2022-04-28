@@ -1,6 +1,7 @@
 # ML-DevOPs Project 3
 
 Udacity project num 3
+Public GitHub Repo link: https://github.com/fouratthamri/MLOps-Project3
 
 # How to run
 
