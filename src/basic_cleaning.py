@@ -10,7 +10,10 @@ def clean_dataset(data):
     """
     data.replace({'?': None}, inplace=True)
     data.dropna(inplace=True)
-
+    data.drop("fnlgt", axis="columns", inplace=True)
+    data.drop("education-num", axis="columns", inplace=True)
+    data.drop("capital-gain", axis="columns", inplace=True)
+    data.drop("capital-loss", axis="columns", inplace=True)
     return data
 
 

@@ -16,7 +16,7 @@ data = {
     "hoursPerWeek": 60,
     "nativeCountry": "United-States"
     }
-r = requests.post('https://ml-heroku-fastapi.herokuapp.com/', json=data)
+r = requests.post('https://classifier-api-heroku.herokuapp.com/', json=data)
 
 assert r.status_code == 200
 
