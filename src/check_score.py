@@ -1,5 +1,5 @@
 """
-Check Score procedure
+Check Score of trained model
 """
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -10,7 +10,7 @@ import logging
 
 def main():
     """
-    Execute score checking
+    Run performance check
     """
     df = pd.read_csv("data/prepared/census.csv")
     _, test = train_test_split(df, test_size=0.20)

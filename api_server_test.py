@@ -1,5 +1,5 @@
 """
-Api servermodule test
+Inference API Testing module
 """
 import pytest
 from fastapi.testclient import TestClient

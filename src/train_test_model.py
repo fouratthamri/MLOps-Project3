@@ -1,5 +1,5 @@
 """
-Train model procedure
+Model trainig module
 """
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -9,7 +9,7 @@ import src.helper_functions
 
 def main():
     """
-    Execute model training
+    Run model training
     """
     df = pd.read_csv("data/prepared/census.csv")
     train, _ = train_test_split(df, test_size=0.20)
