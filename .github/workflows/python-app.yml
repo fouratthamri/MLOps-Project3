@@ -50,7 +50,7 @@ jobs:
 
     - name: DVC Pull
       run: |
-        dvc pull --force
+        dvc pull
 
     - name: Test with pytest
       run: |
