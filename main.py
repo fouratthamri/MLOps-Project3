@@ -1,4 +1,3 @@
-# Put the code for your API here.
 import argparse
 from src import basic_cleaning, train_test_model, check_score
 import logging
