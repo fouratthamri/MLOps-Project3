@@ -93,7 +93,7 @@ def test_inference_above():
                 encoder=encoder, lb=lb, training=False)
     pred = src.helper_functions.inference(model, X)
     y = lb.inverse_transform(pred)[0]
-    assert y == ">50K"
+    assert y == ">50K" or y == ">50K"
 
 
 def test_inference_below():
