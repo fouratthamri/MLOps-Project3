@@ -19,7 +19,6 @@ def get_categorical_features():
     categorical_features = [
         "workclass",
         "education",
-        "education-num",
         "marital-status",
         "occupation",
         "relationship",
