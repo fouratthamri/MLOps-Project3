@@ -1,51 +1,30 @@
 import os
+
+import numpy as np
+import pandas as pd
 from fastapi import FastAPI
-from pydantic import BaseModel
-from typing import Literal
 from joblib import load
 from pandas.core.frame import DataFrame
-import src.helper_functions
-import numpy as np
+from pydantic import BaseModel, Field
+
+from src.common_functions import get_categorical_features, infer, process_data
 
 
 class User(BaseModel):
-    age: int
-    workclass: Literal[
-        'State-gov', 'Self-emp-not-inc', 'Private', 'Federal-gov',
-        'Local-gov', 'Self-emp-inc', 'Without-pay']
-    education: Literal[
-        'Bachelors', 'HS-grad', '11th', 'Masters', '9th',
-        'Some-college',
-        'Assoc-acdm', '7th-8th', 'Doctorate', 'Assoc-voc', 'Prof-school',
-        '5th-6th', '10th', 'Preschool', '12th', '1st-4th']
-    maritalStatus: Literal[
-        'Never-married', 'Married-civ-spouse', 'Divorced',
-        'Married-spouse-absent', 'Separated', 'Married-AF-spouse',
-        'Widowed']
-    occupation: Literal[
-        'Adm-clerical', 'Exec-managerial', 'Handlers-cleaners',
-        'Prof-specialty', 'Other-service', 'Sales', 'Transport-moving',
-        'Farming-fishing', 'Machine-op-inspct', 'Tech-support',
-        'Craft-repair', 'Protective-serv', 'Armed-Forces',
-        'Priv-house-serv']
-    relationship: Literal[
-        'Not-in-family', 'Husband', 'Wife', 'Own-child',
-        'Unmarried', 'Other-relative']
-    race: Literal[
-        'White', 'Black', 'Asian-Pac-Islander', 'Amer-Indian-Eskimo',
-        'Other']
-    sex: Literal['Male', 'Female']
-    hoursPerWeek: int
-    nativeCountry: Literal[
-        'United-States', 'Cuba', 'Jamaica', 'India', 'Mexico',
-        'Puerto-Rico', 'Honduras', 'England', 'Canada', 'Germany', 'Iran',
-        'Philippines', 'Poland', 'Columbia', 'Cambodia', 'Thailand',
-        'Ecuador', 'Laos', 'Taiwan', 'Haiti', 'Portugal',
-        'Dominican-Republic', 'El-Salvador', 'France', 'Guatemala',
-        'Italy', 'China', 'South', 'Japan', 'Yugoslavia', 'Peru',
-        'Outlying-US(Guam-USVI-etc)', 'Scotland', 'Trinadad&Tobago',
-        'Greece', 'Nicaragua', 'Vietnam', 'Hong', 'Ireland', 'Hungary',
-        'Holand-Netherlands']
+    age: int = Field(..., example=47)
+    workclass: str = Field(..., example="Private")
+    fnlgt: int = Field(..., example=70878)
+    education: str = Field(..., example="Masters")
+    education_num: int = Field(..., example=11)
+    marital_status: str = Field(..., example="Separated")
+    occupation: str = Field(..., example="Sales")
+    relationship: str = Field(..., example="Not-in-family")
+    race: str = Field(..., example="Asian-Pac-Islander")
+    sex: str = Field(..., example="Male")
+    capital_gain: int = Field(..., example=1289)
+    capital_loss: int = Field(..., example=50)
+    hours_per_week: int = Field(..., example=45)
+    native_country: str = Field(..., example="United-States")
 
 
 if "DYNO" in os.environ and os.path.isdir(".dvc"):
@@ -63,7 +42,7 @@ async def get_items():
 
 
 @app.post("/")
-async def inference(user_data: User):
+async def inference(payload: User):
     model = load("data/model/model.joblib")
     encoder = load("data/model/encoder.joblib")
     lb = load("data/model/lb.joblib")
@@ -71,34 +50,42 @@ async def inference(user_data: User):
     print(encoder)
 
     array = np.array([[
-                     user_data.age,
-                     user_data.workclass,
-                     user_data.education,
-                     user_data.maritalStatus,
-                     user_data.occupation,
-                     user_data.relationship,
-                     user_data.race,
-                     user_data.sex,
-                     user_data.hoursPerWeek,
-                     user_data.nativeCountry
+                     payload.age,
+                     payload.workclass,
+                     payload.fnlgt,
+                     payload.education,
+                     payload.education_num,
+                     payload.marital_status,
+                     payload.occupation,
+                     payload.relationship,
+                     payload.race,
+                     payload.sex,
+                     payload.capital_gain,
+                     payload.capital_loss,
+                     payload.hours_per_week,
+                     payload.native_country
                      ]])
-    df_temp = DataFrame(data=array, columns=[
+    data_input = DataFrame(data=array, columns=[
         "age",
         "workclass",
+        "fnlgt",
         "education",
+        "education-num",
         "marital-status",
         "occupation",
         "relationship",
         "race",
         "sex",
+        "capital-loss",
+        "capital-gain",
         "hours-per-week",
         "native-country",
     ])
 
-    X, _, _, _ = src.helper_functions.process_data(
-                df_temp,
-                categorical_features=src.helper_functions.get_categorical_features(),
-                encoder=encoder, lb=lb, training=False)
-    pred = src.helper_functions.inference(model, X)
-    y = lb.inverse_transform(pred)[0]
+    X, _, _, _ = process_data(
+        data_input,
+        categorical_features=get_categorical_features(),
+        encoder=encoder, lb=lb, training=False)
+    prediction = infer(model, X)
+    y = lb.inverse_transform(prediction)[0]
     return {"prediction": y}

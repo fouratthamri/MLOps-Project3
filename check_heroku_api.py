@@ -1,22 +1,26 @@
 """
-Heroku Api test script
+Test Heroku API
 """
 import requests
 
 
-data = {
-    "age": 24,
-    "workclass": "Private",
-    "education": "Some-college",
-    "maritalStatus": "Divorced",
-    "occupation": "Tech-support",
-    "relationship": "Husband",
-    "race": "Black",
-    "sex": "Male",
-    "hoursPerWeek": 40,
-    "nativeCountry": "United-States"
+input_data = {
+        "age": 32,
+        "workclass": "Private",
+        "fnlgt": 77516,
+        "education": "Some-college",
+        "education_num": 13,
+        "marital_status": "Married-civ-spouse",
+        "occupation": "Exec-managerial",
+        "relationship": "Husband",
+        "race": "White",
+        "sex": "Male",
+        "capital_gain": 2174,
+        "capital_loss": 0,
+        "hours_per_week": 60,
+        "native_country": "United-States",
     }
-r = requests.post('https://classifier-api-heroku.herokuapp.com/', json=data)
+r = requests.post('https://classifier-api-heroku.herokuapp.com/', json=input_data)
 
 assert r.status_code == 200
 

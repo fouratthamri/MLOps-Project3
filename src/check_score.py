@@ -1,45 +1,46 @@
 """
-Check Score of trained model
+Evaluate performance of trained model
 """
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from joblib import load
-import src.helper_functions
 import logging
+
+import pandas as pd
+from joblib import load
+from sklearn.model_selection import train_test_split
+
+from src.common_functions import (calculate_metrics, get_categorical_features,
+                                  process_data)
 
 
 def main():
     """
     Run performance check
     """
-    df = pd.read_csv("data/prepared/census.csv")
-    _, test = train_test_split(df, test_size=0.20)
+    data = pd.read_csv("data/prepared/census.csv")
+    _, test = train_test_split(data, test_size=0.20)
 
-    trained_model = load("data/model/model.joblib")
+    model = load("data/model/model.joblib")
     encoder = load("data/model/encoder.joblib")
     lb = load("data/model/lb.joblib")
 
-    slice_values = []
+    slice_metrics = []
 
-    for cat in src.helper_functions.get_categorical_features():
-        for cls in test[cat].unique():
-            df_temp = test[test[cat] == cls]
+    for category in get_categorical_features():
+        for class_ in test[category].value_counts().index:
+            df_temp = test[test[category] == class_]
 
-            X_test, y_test, _, _ = src.helper_functions.process_data(
+            X_test, y_test, _, _ = process_data(
                 df_temp,
-                categorical_features=src.helper_functions.get_categorical_features(),
+                categorical_features=get_categorical_features(),
                 label="salary", encoder=encoder, lb=lb, training=False)
 
-            y_preds = trained_model.predict(X_test)
+            y_preds = model.predict(X_test)
 
-            prc, rcl, fb = src.helper_functions.compute_model_metrics(y_test,
-                                                                      y_preds)
+            precision, recall, f1 = calculate_metrics(y_test, y_preds)
 
-            line = "[%s->%s] Precision: %s " \
-                   "Recall: %s FBeta: %s" % (cat, cls, prc, rcl, fb)
+            line = "[%s->%s] Precision: %s " "Recall: %s F1 Score: %s" % (category, class_, precision, recall, f1)
             logging.info(line)
-            slice_values.append(line)
+            slice_metrics.append(line)
 
-    with open('data/model/slice_output.txt', 'w') as out:
-        for slice_value in slice_values:
-            out.write(slice_value + '\n')
+    with open('data/model/slice_output.txt', 'w') as output:
+        for slice_value in slice_metrics:
+            output.write(slice_value + '\n')

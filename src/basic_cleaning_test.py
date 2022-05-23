@@ -1,19 +1,21 @@
 """
-Basic cleaning module test
+Tests for basic_cleaning module functions
 """
+
 import pandas as pd
 import pytest
+
 import src.basic_cleaning
 
 
 @pytest.fixture
 def data():
     """
-    Load Dataset
+    Loads data
     """
-    df = pd.read_csv("data/raw/census.csv", skipinitialspace=True)
-    df = src.basic_cleaning.clean_dataset(df)
-    return df
+    data = pd.read_csv("data/raw/census.csv")
+    data = src.basic_cleaning.clean_dataset(data)
+    return data
 
 
 def test_wrong_vals(data):
