@@ -56,9 +56,6 @@ jobs:
       run: |
         dvc dag
 
-    - name: Run
-      run: |
-        python main.py
       
     - name: Test with pytest
       run: |
