@@ -1,3 +1,4 @@
+"""MAIN"""
 import argparse
 import logging
 
