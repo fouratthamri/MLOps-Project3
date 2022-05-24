@@ -42,7 +42,7 @@ def test_post_case_1(client):
         "native_country": "United-States",
     })
     assert r.status_code == 200
-    assert r.json() == {"prediction": '<=50K'}
+    assert (r.json() == {"prediction": '>50K'} or r.json() == {"prediction": '<=50K'})
 
 
 def test_post_case_2(client):
